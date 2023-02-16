@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest --watchAll--",
-    "dev": "nodemon -r dotenv/config ./src/server.ts",
+    "dev": "nodemon -r dotenv/config ./src/index.ts",
     "build": "tsc"
   },
   "repository": {

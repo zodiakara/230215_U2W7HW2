@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
+import { UserDocument, UserModel } from "./types";
 
 const { Schema, model } = mongoose;
 
@@ -36,7 +37,7 @@ UsersSchema.pre("save", async function (next) {
 
 UsersSchema.methods.toJSON = function () {
   // This .toJSON method is used EVERY TIME Express does a res.send(user/s)
-  // This does mean that we could override the default behaviour of this method to remove the passwords (and other unnecessary things as well) and then return the users
+  // This does mean that we could override the default behavior of this method to remove the passwords (and other unnecessary things as well) and then return the users
 
   const userDocument = this;
   const user = userDocument.toObject();
@@ -80,4 +81,4 @@ UsersSchema.static("checkCredentials", async function (email, password) {
 // if(user){// credentials are good}
 // else { // credentials not good}
 
-export default model("user", UsersSchema);
+export default model<UserDocument, UserModel>("user", UsersSchema);

@@ -1,6 +1,8 @@
 import express from "express";
 import createError from "http-errors";
 import UsersModel from "./model";
+import { JWTAuthMiddleware } from "../../lib/auth/jwt";
+import { createAccessToken } from "../../lib/auth/tools";
 
 const usersRouter = express.Router();
 
@@ -14,7 +16,7 @@ usersRouter.post("/", async (req, res, next) => {
   }
 });
 
-usersRouter.get("/", async (req, res, next) => {
+usersRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
   try {
     const users = await UsersModel.find();
     res.send(users);
@@ -60,6 +62,29 @@ usersRouter.delete("/:userId", async (req, res, next) => {
       res.status(204).send();
     } else {
       next(createError(404, `User with id ${req.params.userId} not found!`));
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+usersRouter.post("/login", async (req, res, next) => {
+  try {
+    // 1. Obtain the credentials from req.body
+    const { email, password } = req.body;
+
+    // 2. Verify the credentials
+    const user = await UsersModel.checkCredentials(email, password);
+
+    if (user) {
+      // 3.1 If credentials are fine --> generate an access token (JWT) and send it back as a response
+      const payload = { _id: user._id, role: user.role };
+
+      const accessToken = await createAccessToken(payload);
+      res.send({ accessToken });
+    } else {
+      // 3.2 If credentials are NOT fine --> trigger a 401 error
+      next(createError(401, "Credentials are not ok!"));
     }
   } catch (error) {
     next(error);

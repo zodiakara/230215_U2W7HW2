@@ -8,7 +8,7 @@ interface OnlineUser {
 let onlineUsers: OnlineUser[] = [];
 
 export const newConnectionHandler = (newClient: Socket) => {
-  console.log("new connection", newClient);
+  console.log("new connection", newClient.id);
   // 1. Emit a "welcome" event to the connected client
   newClient.emit("welcome", { message: `Hello ${newClient.id}` });
 

@@ -9,6 +9,7 @@ import {
   badRequestHandler,
   notFoundHandler,
   genericErrorHandler,
+  unauthorizedHandler,
 } from "./errorHandlers";
 
 const expressServer = express();
@@ -29,6 +30,7 @@ expressServer.use("/users", usersRouter);
 
 // *********************************** ERROR HANDLERS ****************************
 expressServer.use(badRequestHandler);
+expressServer.use(unauthorizedHandler);
 expressServer.use(notFoundHandler);
 expressServer.use(genericErrorHandler);
 
